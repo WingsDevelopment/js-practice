@@ -1,0 +1,7 @@
+"" - exact match
+na kraju: -rec izbaci rec 
+na pocetku: site:URL(www.gugl.com) + search da searchuje samo sa tog sajta
+na kraju: before:2000 and after:2020 da searchujes google nakon neke godine
+na kraju: 2013..2015 trazi mi izmedju tog datuma ili para itd
+wild card * how to design * with autocad
+SITE:*.fireship.io find all subdomains
