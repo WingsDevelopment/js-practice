@@ -37,3 +37,4 @@ for await (const a of arrray) {log(a)}
 
 //bundlephobia - npm package velicina i brzina
 //run js in file with quokka.js -> start current file
+//https://quokkajs.com/ - dok kucas da ti pokazuje console.log
