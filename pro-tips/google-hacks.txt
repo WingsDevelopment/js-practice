@@ -5,3 +5,15 @@ na kraju: before:2000 and after:2020 da searchujes google nakon neke godine
 na kraju: 2013..2015 trazi mi izmedju tog datuma ili para itd
 wild card * how to design * with autocad
 SITE:*.fireship.io find all subdomains
+
+------------------
+js teo question
+pure function is a function that only depends on her data and modify only her data
+
+closure is when function is referencing something from outer scope
+
+scope can be block global and function (function is usually what peopel mean when they say scope)
+each function creates a new scope. scope is basically everything that is inside that function
+outer function can't reference something inside inner function scope
+
+this - is a keyword, usually a object that represents current execution context
