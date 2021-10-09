@@ -50,10 +50,34 @@ const asyncWhile = () => {
         return '🐷 billion loops done';
     })
 }
+// log('🥪 Synchronous 1');
+// asyncWhile().then((r) => log(r))
+// log('🥪 Synchronous 2');
+
+function handleRejectedA(e) {
+    log('rej')
+    log(e);
+}
+function handleResolvedA(e) {
+    log('res')
+    log(e);
+}
+
+const myPromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve({ d: 'f1oo'});
+      }, 500);
+      setTimeout(() => {
+        reject({ d: 'foo'});
+      }, 400);
+  });
+  
 log('🥪 Synchronous 1');
-
-
-asyncWhile().then((r) => console.log(r))
-
-
+  myPromise
+    .then(handleResolvedA, handleRejectedA);
 log('🥪 Synchronous 2');
+
+
+asd = 50;
+var asd = 30;
+log(asd);
