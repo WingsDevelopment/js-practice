@@ -42,7 +42,6 @@ const log = (v) => console.log(`${v} \n Elapsed: ${Date.now() - tick}ms`);
 //run js in file with quokka.js -> start current file
 //https://quokkajs.com/ - dok kucas da ti pokazuje console.log
 
-
 const asyncWhile = () => {
     return Promise.resolve().then(v =>  {
         let i = 0;
