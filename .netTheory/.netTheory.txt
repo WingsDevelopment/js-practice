@@ -1,0 +1,68 @@
+redis
+redis stack exhange - is a .net library used for cashing.
+featuri su 
+- izuzetno brzo sherovanje konekcija za multi calling threads
+- abstraction over redis node config
+- async & sync usage
+- support for redis cluster
+
+AddTransient, AddScoped and AddSingleton Services Differences
+transient - objects are always different. every controller, service, repo is instantiated again when is injected
+scoped - objects are same within 1 request, but different accross multiple requests
+singleton - objects are same for everyrequest
+
+AddIdentity dodaje defoultni identity sistem za navedene usere i role
+
+Authorize - anotacija koja kazuje da klasa ili metod zahteva autorizaciju, moguce je proslediti i role, shema, i policy
+
+dependency injection - je tehnika koja sluzi da objekti dobiju objekte od kojih zavise.
+razlog zasto postoji di je da se postigne separation of concern, povecava citljivost koda, code reuse, 
+i zgodnije je za promenu
+
+controller vs basecontroller - controller ima samo par featurea vise, nasledjuje base kontroller, 
+featurei: su za view, viewbag viewdata viewresult itd..
+
+asinhrono programiranje - je nacin da se postigne paralelno programiranje, 
+dozvoljava ti da izvrsavas akciju u odvojenom procsu od main app thread-a.
+kada se akcija zavrsi, javi se main thread-u. ali ga ne blokira dok se izvrsava.
+
+primer: kreiranje oglasa. uzimanje usera, uzimanje kategorije asinhrono.
+sacekaju se oba, zove se advert factory da napravi instancu adverta(zasto factory jer je logika bila komplikovana, 
+i zavisila je od externih entiteta)
+(kad kazem entite mislim na domenski entitet) nakon toga se zovu servisi za pricing. uzima se cena.
+na useru se zove withdraw, kao posledica toga se updetuju par propa na user u i nastaje transakcija
+ukoliko sve prodje kako treba, cuva se sve odjednom transaktivno u bazi, 
+mi posto smo koristili mongo sami smo implementirali transaktivnost, unitofwork, start transaction, rollback i commit
+ukoliko pukne zbog nedostatka novca i dalje se cuva oglas, neplacen ima i jos par usecase-a gde se cuva, 
+nesto vezano za soc media i jos nesto ne secam se
+i finalno ako je nesto krenulo neocekivano po zlu samo se throwuje exception. a da i nakon sto se napravi oglas. 
+salje se event na rabbit mq, advert created sa advert id-jem
+koji se hvata u dbsync agentu koji je zaduzen za syncovanje baze na eventovima poput crud za advert. 
+i notification agentu
+
+IUnitOfWork
+        void StartTransaction();
+        void CommitTransaction();
+        void AbortTransaction();
+        void Dispose();
+        i sve repo interface, kako je to radilo? pa implementacija unit of work-a je bila smestena dole u infrastrukturi
+        on je priliko njegovog instanciranja, pravio session i sve repoe koji su bili transaktivni i prosledjivao taj session u njih, da bi svi imali isti session, jer mongo db rollback je radio samo
+        ukoliko svi pozivi ka bazi imaju isti session, i posto bi smo mi u istoj transakciji imali pozive ka mnogim repoima ovo je bio jedini clean nacin da se prosledi svuda isti session, 
+        a da se ne uprlja neki servisni layer ili koji god layer koji poziva te repoe.
+        takodje smo imali 2 implementacija svakog repoa da bi se to lepo decaplovalo, ali smo onda imali i odrzavanje koda na 2 mesta sto je bio downside, ali smo dobili tu neku optimizaciju da ne prosledjujemo svuda 
+        session i radimo transaktivno i tamo gde ne bi to trebalo da se radi
+
+izazovi halo oglasi 
+- transaktivnost u mongou
+- brzo i optimizovano prikazivanje oglasa i searchovanje - addovan elastic search
+- syncovanje te 2 baze - rabbitMQ
+- da bi smo izbegli ogromne dokumente u mongodbu cuvali smo samo reference ka objektima
+ali da bi smo prikazali useru smisleno ime necega morali smo da povlacimo preko apija ajaxom
+i loadujemo dodatne podatke koji su bili u cashu
+- rotiranje advert-a u kategorijama. takodje drzano u redisu, najmanji set podataka, koje smo nazivali baner oglasi
+napravili smo mikroservis - koristili smo quartz tehnologiju za pravljenje job-ova za svaku kategoriju
+taj mikroservis je bio reagovao na evente vezane za kategorije, to bi napravilo novi job, i adverte, to bi updateovalo
+job i niz tih oglasa u njemu.
+- kategorije su takodje bile u cashu, i takodje su bile updetovane na svaku promenu. cash invalidator agent
+- metrix agent, mail agent, notification agent, pushevent agent, 
+
